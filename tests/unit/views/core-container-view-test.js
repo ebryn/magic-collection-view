@@ -127,7 +127,6 @@ test("insertBefore", function() {
   equal(container._firstChild._nextSibling._nextSibling._nextSibling, null, "third child's next sibling is null");
 
   run(function() {
-    debugger;
     container.insertBefore(view2, view3);
   });
 

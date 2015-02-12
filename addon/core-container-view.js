@@ -77,26 +77,6 @@ var CoreContainerView = View.extend({
 
     set(newChild, '_parentView', this); // only needed if we don't use createChildView
     newChild.container = this.container;
-    if (!get(newChild, 'templateData')) {
-      set(newChild, 'templateData', get(this, 'templateData'));
-    }
-
-    // TODO: megahax until morph has insertBefore API
-    // this moves the view's morph into the correct location in the container's _childViewsMorph object
-    if (newChild._elementCreated) {
-      debugger;
-      var morph = this._childViewsMorph;
-      var fromIndex = morph.morphs.indexOf(newChild._morph);
-      var toIndex;
-      if (before) {
-        toIndex = morph.morphs.indexOf(before._morph);
-      } else {
-        toIndex = morph.morphs.length - 1;
-      }
-      if (fromIndex !== toIndex) {
-        morph.move(fromIndex, toIndex);
-      }
-    }
 
     run.scheduleOnce('render', this, '_ensureChildrenAreInDOM');
   },
@@ -154,16 +134,16 @@ merge(states.inBuffer, {
 
 merge(states.hasElement, {
   ensureChildrenAreInDOM: function(view) {
-    var current = view._firstChild;
     var renderer = view._renderer;
-    var i = 0;
+    var currentChild = view._lastChild;
+    var refMorph = null;
 
-    while (current) {
-      if (!current._elementCreated) {
-        renderer.renderTree(current, view, i);
+    while (currentChild) {
+      if (!currentChild._elementCreated) {
+        renderer.renderTree(currentChild, view, refMorph);
       }
-      current = current._nextSibling;
-      i++;
+      refMorph = currentChild._morph;
+      currentChild = currentChild._previousSibling;
     }
   }
 });
