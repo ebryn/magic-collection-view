@@ -19,6 +19,23 @@ var EmberViewStates = StatesModule.states;
 @submodule ember-views
 */
 
+var EmberRenderer = Ember.__loader.require('ember-views/system/renderer')['default'];
+EmberRenderer.prototype.childViews = function(view) {
+  if (view._firstChild) {
+    // TODO: enable the renderer to loop over our linked list instead of generating an array AOT
+    var views = [];
+    var current = view._firstChild;
+    while (current) {
+      views.push(current);
+      current = current._nextSibling;
+    }
+    return views;
+  } else {
+    return view._childViews;
+  }
+};
+
+
 var states = cloneStates(EmberViewStates);
 
 var CoreContainerView = View.extend({
