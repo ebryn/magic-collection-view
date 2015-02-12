@@ -30,9 +30,7 @@ test("hello world", function() {
   // });
 
   view = View.create({
-    template: function() {
-      return "This is my moment";
-    }
+    template: Ember.HTMLBars.compile("This is my moment")
   });
 
   run(function() {
