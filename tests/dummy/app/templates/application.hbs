@@ -1,3 +1,14 @@
 Add new: {{input type="text" value=newPerson action="addNewPerson"}}
 <button {{action "shuffle"}}>shuffle</button>
-{{collection 'my-collection' content=model}}
+
+<table>
+  <thead>
+    <tr>
+      <th {{action "sortBy" "id"}}>ID</th>
+      <th {{action "sortBy" "firstName"}}>First name</th>
+      <th {{action "sortBy" "lastName"}}>Last name</th>
+      <th {{action "sortBy" "birthday"}}>Birthday</th>
+    </tr>
+  </thead>
+  {{collection 'my-collection' content=model tagName="tbody" itemTagName="tr"}}
+</table>

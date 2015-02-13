@@ -11,13 +11,14 @@ function shuffleArray(array) {
 export default Ember.Route.extend({
   model: function() {
     this._id = 0;
-    var items = [
-      {id: ++this._id, name: 'Erik'},
-      {id: ++this._id, name: 'Kris'},
-      {id: ++this._id, name: 'Martin'}
-    ];
+    var rows = [];
+    var generator = Chance();
 
-    return items;
+    for (var i = 0, l = 1000; i < l; i++) {
+      rows.push({id: ++this._id, firstName: generator.first(), lastName: generator.last(), birthday: generator.birthday()});
+    }
+
+    return rows;
   },
 
   actions: {
@@ -30,7 +31,27 @@ export default Ember.Route.extend({
 
     shuffle: function() {
       var model = this.get('controller.model');
-      this.set('controller.model', shuffleArray(model).slice());
+      var self = this;
+      for (var i = 0, l = 1000; i < l; i++) {
+        Ember.run.later(function() {
+          self.set('controller.model', shuffleArray(model).slice());
+        }, i * 10);
+      }
+    },
+
+    sortBy: function(propName) {
+      if (this._descending === undefined) { this._descending = true; }
+      if (propName === this._lastPropName) { this._descending = !this._descending; }
+      var model = this.get('controller.model');
+      model.sort(function(a, b) {
+        if (this._descending) {
+          return Ember.compare(a[propName], b[propName]);
+        } else {
+          return Ember.compare(b[propName], a[propName]);
+        }
+      }.bind(this));
+      this.set('controller.model', model.slice());
+      this._lastPropName = propName;
     }
   }
 })
