@@ -1,5 +1,5 @@
 /*globals Ember */
-import CoreContainerView from "./core_container_view";
+import CoreContainerView from "./core-container-view";
 var get = Ember.get; // import { get } from "ember-metal/property_get";
 var set = Ember.set; // import { set } from "ember-metal/property_set";
 
@@ -37,6 +37,7 @@ var MagicCollectionView = CoreContainerView.extend({
       } else {
         childView = this._childViewsByKey[itemKey] = this.createChildView(this.itemViewClass, {
           content: item,
+          context: item,
           contentIndex: i,
           _key: itemKey
         });
