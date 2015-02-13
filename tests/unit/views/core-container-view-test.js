@@ -87,7 +87,7 @@ test("insertBefore", function() {
     container.appendTo('#qunit-fixture');
   });
 
-  equal(trim(container.$().text()), "123");
+  equal(trim(container.$().text()), "123", "initial output looks good");
 
   equal(container._firstChild, view1, "view1 is the first child");
   equal(container._lastChild, view3,  "view3 is the last child");
@@ -102,7 +102,7 @@ test("insertBefore", function() {
     container.insertBefore(view3, view1);
   });
 
-  equal(trim(container.$().text()), "312");
+  equal(trim(container.$().text()), "312", "after first move, DOM looks good");
   equal(container._firstChild, view3, "view3 is the first child");
   equal(container._lastChild, view2,  "view2 is the last child");
   equal(container._firstChild._previousSibling, null, "first child's previous sibling is null");
@@ -116,7 +116,7 @@ test("insertBefore", function() {
     container.insertBefore(view1, view3);
   });
 
-  equal(trim(container.$().text()), "132");
+  equal(trim(container.$().text()), "132", "after second move, DOM looks good");
   equal(container._firstChild, view1, "view1 is the first child");
   equal(container._lastChild, view2,  "view2 is the last child");
   equal(container._firstChild._previousSibling, null, "first child's previous sibling is null");
@@ -130,7 +130,7 @@ test("insertBefore", function() {
     container.insertBefore(view2, view3);
   });
 
-  equal(trim(container.$().text()), "123");
+  equal(trim(container.$().text()), "123", "after third move, DOM looks good");
   equal(container._firstChild, view1, "view1 is the first child");
   equal(container._lastChild, view3,  "view3 is the last child");
   equal(container._firstChild._previousSibling, null, "first child's previous sibling is null");
