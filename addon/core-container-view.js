@@ -135,25 +135,25 @@ merge(states.inBuffer, {
 merge(states.hasElement, {
   ensureChildrenAreInDOM: function(view) {
     var renderer = view._renderer;
+
     var currentChild = view._lastChild;
-    var currentMorph = null;
+    var currentMorph = view._childViewsMorph.lastChildMorph;
 
-    // Sync children to DOM
     while (currentChild) {
-      if (!currentChild._elementCreated) {
-        renderer.renderTree(currentChild, view, currentMorph);
+      if (currentChild._morph) {
+        if (currentChild._morph !== currentMorph) {
+          view._childViewsMorph.insertBeforeMorph(currentChild._morph, currentMorph.nextMorph);
+          currentMorph = currentChild._morph;
+        }
+      } else {
+        var refMorph = currentMorph ? currentMorph.nextMorph : view._childViewsMorph.firstChildMorph;
+        renderer.renderTree(currentChild, view, refMorph);
+
+        currentMorph = currentChild._morph;
       }
-      currentChild = currentChild._previousSibling;
-    }
 
-    currentChild = view._lastChild;
-    currentMorph = currentChild && currentChild._morph;
-
-    // Sync morphs/DOM to child views order
-    while (currentChild) {
-      view._childViewsMorph.insertBeforeMorph(currentMorph, currentChild._nextSibling ? currentChild._nextSibling._morph : null);
       currentChild = currentChild._previousSibling;
-      currentMorph = currentChild && currentChild._morph;
+      currentMorph = currentMorph.previousMorph;
     }
   }
 });

@@ -11,6 +11,14 @@ var trim = jQuery.trim;
 
 var container, view;
 
+function createView(content) {
+  return View.create({
+    template: function() {
+      return content;
+    }
+  });
+}
+
 QUnit.module("CoreContainerView", {
   teardown: function() {
     run(function() {
@@ -24,10 +32,6 @@ test("hello world", function() {
   container = CoreContainerView.create({
     container: {}
   });
-
-  // run(function() {
-  //   container.appendTo('#qunit-fixture');
-  // });
 
   view = View.create({
     template: Ember.HTMLBars.compile("This is my moment")
@@ -62,23 +66,9 @@ test("insertBefore", function() {
     container: {}
   });
 
-  var view1 = View.create({
-    template: function() {
-      return "1";
-    }
-  });
-
-  var view2 = View.create({
-    template: function() {
-      return "2";
-    }
-  });
-
-  var view3 = View.create({
-    template: function() {
-      return "3";
-    }
-  });
+  var view1 = createView("1");
+  var view2 = createView("2");
+  var view3 = createView("3");
 
   run(function() {
     container.insertBefore(view1, null);
@@ -144,5 +134,51 @@ test("insertBefore", function() {
     view1.destroy();
     view2.destroy();
     view3.destroy();
+  });
+});
+
+test("insertBefore: inserts correctly when in DOM", function() {
+  container = CoreContainerView.create({
+    container: {}
+  });
+
+  var view1 = createView("1");
+  var view2 = createView("2");
+  var view3 = createView("3");
+  var view4 = createView("4");
+
+  run(function() {
+    container.appendTo('#qunit-fixture');
+  });
+
+  run(function() {
+    container.insertBefore(view1, null);
+  });
+
+  equal(trim(container.$().text()), "1");
+
+  run(function() {
+    container.insertBefore(view2, null);
+  });
+
+  equal(trim(container.$().text()), "12");
+
+  run(function() {
+    container.insertBefore(view3, view2);
+  });
+
+  equal(trim(container.$().text()), "132");
+
+  run(function() {
+    container.insertBefore(view4, view1);
+  });
+
+  equal(trim(container.$().text()), "4132");
+
+  run(function() {
+    view1.destroy();
+    view2.destroy();
+    view3.destroy();
+    view4.destroy();
   });
 });
